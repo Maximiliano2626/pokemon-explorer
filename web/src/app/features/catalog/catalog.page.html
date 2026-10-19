@@ -1,0 +1,87 @@
+<section class="intro">
+  <h1>Encuentra a tu Pokémon</h1>
+
+  <div class="search">
+    <label for="search">Buscar por nombre o número</label>
+    <div class="field">
+      <svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22">
+        <circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.4" />
+        <path d="m15.5 15.5 5 5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />
+      </svg>
+      <input
+        id="search"
+        type="search"
+        placeholder="pikachu, mr mime, 25…"
+        autocomplete="off"
+        spellcheck="false"
+        [value]="searchText()"
+        (input)="onSearchInput($event)"
+      />
+    </div>
+  </div>
+
+  <p class="summary" aria-live="polite">
+    @if (results(); as page) {
+      @if (search()) {
+        {{ page.total }} {{ page.total === 1 ? 'resultado' : 'resultados' }} para «{{ search() }}»
+      } @else {
+        {{ page.total }} Pokémon en el catálogo
+      }
+    }
+  </p>
+</section>
+
+@if (catalog.error() && !results()) {
+  <!-- Error en la primera carga: no hay nada que mostrar. -->
+  <div class="notice" role="alert">
+    <h2>No pudimos cargar el catálogo</h2>
+    <p>
+      El servidor no respondió. Revisa que el BFF esté corriendo en el puerto 3000 e inténtalo
+      otra vez.
+    </p>
+    <button type="button" (click)="catalog.reload()">Reintentar</button>
+  </div>
+} @else if (!results()) {
+  <!-- Primera carga: esqueletos con la forma de las tarjetas. -->
+  <ul class="grid" aria-busy="true" aria-label="Cargando Pokémon">
+    @for (item of skeletons; track item) {
+      <li class="skeleton"></li>
+    }
+  </ul>
+} @else {
+  @let page = results()!;
+
+  @if (page.items.length === 0 && search()) {
+    <div class="notice">
+      <h2>Ningún Pokémon coincide con «{{ search() }}»</h2>
+      <p>Revisa la ortografía o prueba con parte del nombre o con el número de la Pokédex.</p>
+      <button type="button" (click)="clearSearch()">Limpiar búsqueda</button>
+    </div>
+  } @else if (page.items.length === 0) {
+    <div class="notice">
+      <h2>Esta página no existe</h2>
+      <p>El catálogo tiene {{ page.totalPages }} páginas.</p>
+      <button type="button" (click)="goToFirstPage()">Ir a la primera página</button>
+    </div>
+  } @else {
+    @if (catalog.error()) {
+      <!-- Ya había datos, pero falló la actualización: avisamos sin borrar lo que se ve. -->
+      <p class="inline-error" role="alert">
+        No pudimos actualizar los resultados.
+        <button type="button" class="link" (click)="catalog.reload()">Reintentar</button>
+      </p>
+    }
+
+    <ul class="grid" [class.is-stale]="catalog.isLoading()" [attr.aria-busy]="catalog.isLoading()">
+      @for (pokemon of page.items; track pokemon.id) {
+        <li>
+          <app-pokemon-card [pokemon]="pokemon" [returnTo]="returnTo()" [eager]="$index < 6" />
+        </li>
+      }
+    </ul>
+
+    @if (page.totalPages > 1) {
+      <app-pagination [page]="page.page" [totalPages]="page.totalPages" />
+    }
+  }
+}

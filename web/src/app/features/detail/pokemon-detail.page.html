@@ -1,0 +1,123 @@
+<a class="back" routerLink="/" [queryParams]="returnTo">
+  <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18">
+    <path
+      d="M15 5 8 12l7 7"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2.4"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+  Volver al catálogo
+</a>
+
+@if (pokemon.isLoading() && !pokemon.hasValue()) {
+  <!-- Cargando: esqueleto con la misma forma que el contenido final. -->
+  <div class="detail is-loading" aria-busy="true" aria-label="Cargando Pokémon">
+    <div class="art skeleton"></div>
+    <div class="info">
+      <div class="skeleton line wide"></div>
+      <div class="skeleton line"></div>
+      <div class="skeleton block"></div>
+    </div>
+  </div>
+} @else if (errorStatus() === 404) {
+  <div class="notice" role="alert">
+    <h1>No encontramos a «{{ name() }}»</h1>
+    <p>Puede que el nombre esté mal escrito. Búscalo en el catálogo.</p>
+    <a class="button" routerLink="/" [queryParams]="{ q: name() }">Buscar «{{ name() }}»</a>
+  </div>
+} @else if (errorStatus() !== null) {
+  <div class="notice" role="alert">
+    <h1>No pudimos cargar este Pokémon</h1>
+    <p>El servidor no respondió. Inténtalo otra vez en unos segundos.</p>
+    <button type="button" (click)="pokemon.reload()">Reintentar</button>
+  </div>
+} @else if (pokemon.hasValue()) {
+  @let p = pokemon.value();
+
+  <article class="detail" [class]="'type-' + p.types[0]">
+    <div class="art">
+      <span class="dex" aria-hidden="true">{{ p.id | dexNumber }}</span>
+      <app-pokemon-image
+        [src]="p.imageUrl"
+        [alt]="p.name | pokemonName"
+        [size]="475"
+        [eager]="true"
+      />
+    </div>
+
+    <div class="info">
+      <header>
+        <p class="number">{{ p.id | dexNumber }}</p>
+        <h1>{{ p.name | pokemonName }}</h1>
+        @if (p.genus) {
+          <p class="genus">{{ p.genus }}</p>
+        }
+        <ul class="types" aria-label="Tipos">
+          @for (type of p.types; track type) {
+            <li><app-type-badge [type]="type" /></li>
+          }
+        </ul>
+      </header>
+
+      @if (p.description) {
+        <p class="description">{{ p.description }}</p>
+      }
+
+      <dl class="facts">
+        <div>
+          <dt>Altura</dt>
+          <dd>{{ p.heightM | decimal }} m</dd>
+        </div>
+        <div>
+          <dt>Peso</dt>
+          <dd>{{ p.weightKg | decimal }} kg</dd>
+        </div>
+        <div>
+          <dt>Experiencia base</dt>
+          <dd>{{ p.baseExperience ?? '—' }}</dd>
+        </div>
+      </dl>
+
+      <section aria-labelledby="stats-title">
+        <h2 id="stats-title">Estadísticas base</h2>
+        <table class="stats">
+          <tbody>
+            @for (stat of p.stats; track stat.key) {
+              <tr>
+                <th scope="row">{{ stat.key | statLabel }}</th>
+                <td class="value">{{ stat.value }}</td>
+                <td class="bar" aria-hidden="true">
+                  <span [style.width.%]="statPercent(stat.value)"></span>
+                </td>
+              </tr>
+            }
+          </tbody>
+          <tfoot>
+            <tr>
+              <th scope="row">Total</th>
+              <td class="value">{{ totalStats() }}</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </section>
+
+      <section aria-labelledby="abilities-title">
+        <h2 id="abilities-title">Habilidades</h2>
+        <ul class="abilities">
+          @for (ability of p.abilities; track ability.name) {
+            <li>
+              {{ ability.name | pokemonName }}
+              @if (ability.hidden) {
+                <span class="hidden-tag">oculta</span>
+              }
+            </li>
+          }
+        </ul>
+      </section>
+    </div>
+  </article>
+}

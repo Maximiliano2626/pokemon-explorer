@@ -7,6 +7,10 @@ export const routes: Routes = [
     title: 'Explorador Pokémon',
     loadComponent: () => import('./features/catalog/catalog.page').then((m) => m.CatalogPage),
   },
-  // La ruta del detalle (/pokemon/:name) la agregamos en el paso 10.
+  {
+    path: 'pokemon/:name',
+    loadComponent: () =>
+      import('./features/detail/pokemon-detail.page').then((m) => m.PokemonDetailPage),
+  },
   { path: '**', redirectTo: '' },
 ];

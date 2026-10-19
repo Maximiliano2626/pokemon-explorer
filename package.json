@@ -1,0 +1,25 @@
+{
+  "name": "pokemon-explorer",
+  "private": true,
+  "description": "Explorador de Pokémon: Angular 21 + NestJS (Backend for Frontend sobre PokéAPI)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Maximiliano2626/pokemon-explorer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Maximiliano2626/pokemon-explorer/issues"
+  },
+  "homepage": "https://github.com/Maximiliano2626/pokemon-explorer#readme",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "install:all": "npm install && npm install --prefix bff && npm install --prefix web",
+    "dev": "concurrently -k -n bff,web -c blue,magenta \"npm run start:dev --prefix bff\" \"npm start --prefix web\"",
+    "build": "npm run build --prefix bff && npm run build --prefix web",
+    "test": "npm test --prefix bff && npm run test:e2e --prefix bff && npm test --prefix web -- --watch=false"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.6"
+  }
+}

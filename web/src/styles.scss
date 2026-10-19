@@ -1,1 +1,157 @@
-/* You can add global styles to this file, and also import other style files */
+/*
+ * Estilos globales: tokens de diseño, base tipográfica y colores por tipo.
+ * Paleta fría y neutra; el color lo ponen los tipos de cada Pokémon.
+ */
+
+:root {
+  --paper: #eef1f6;
+  --surface: #ffffff;
+  --sunken: #e1e6ef;
+  --ink: #161b2e;
+  --muted: #586079;
+  --line: #d3d9e5;
+  --line-strong: #a9b2c5;
+  --focus: #2b59ff;
+  --danger: #b3261e;
+
+  --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+  --font-body: 'Atkinson Hyperlegible Next', system-ui, sans-serif;
+
+  --radius-md: 0.75rem;
+  --radius-lg: 1.1rem;
+  --radius-xl: 1.75rem;
+
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #12151f;
+    --surface: #1b2030;
+    --sunken: #262c3f;
+    --ink: #eef1f8;
+    --muted: #a3abc2;
+    --line: #2f3650;
+    --line-strong: #4a5373;
+    --focus: #7d9bff;
+    --danger: #ff8a80;
+  }
+}
+
+/* Tonos lo bastante oscuros para que el texto blanco tenga buen contraste. */
+.type-normal { --type-color: #6f6a58; }
+.type-fire { --type-color: #c4501f; }
+.type-water { --type-color: #2f6ad0; }
+.type-grass { --type-color: #3b8a2e; }
+.type-electric { --type-color: #a87a00; }
+.type-ice { --type-color: #2a8a8f; }
+.type-fighting { --type-color: #a3302a; }
+.type-poison { --type-color: #8a3c94; }
+.type-ground { --type-color: #94702e; }
+.type-flying { --type-color: #6a63c4; }
+.type-psychic { --type-color: #c93e6c; }
+.type-bug { --type-color: #6e8a12; }
+.type-rock { --type-color: #8a7a3a; }
+.type-ghost { --type-color: #5a4a8a; }
+.type-dragon { --type-color: #4b38c9; }
+.type-dark { --type-color: #4e4038; }
+.type-steel { --type-color: #5e7084; }
+.type-fairy { --type-color: #b8508f; }
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+.button {
+  display: inline-block;
+  padding: 0.65rem 1.25rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font: inherit;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+
+  &.link {
+    padding: 0;
+    background: none;
+    color: inherit;
+    text-decoration: underline;
+  }
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  padding: 0.5rem 1rem;
+  background: var(--ink);
+  color: var(--paper);
+
+  &:focus {
+    top: 1rem;
+  }
+}
+
+.topbar,
+.page,
+.footer {
+  width: min(72rem, 100% - 2rem);
+  margin-inline: auto;
+}
+
+.topbar {
+  padding-block: 1.25rem;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.page {
+  min-height: 70vh;
+  padding-block: 1.5rem 4rem;
+}
+
+.footer {
+  padding-block: 2rem;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.875rem;
+
+  a {
+    color: inherit;
+  }
+}
